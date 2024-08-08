@@ -7,28 +7,28 @@ import bcrypt from "bcrypt";
 const userSchema = new Schema(
   {
     username: {
-      type: string,
+      type: String,
       unique: true,
       lowercase: true,
       trim: true,
       index: true,
     },
     email: {
-      type: string,
+      type: String,
       unique: true,
       lowercase: true,
       required: true,
       trim: true,
     },
-    fullname: {
-      type: string,
+    fullName: {
+      type: String,
       required: true,
     },
-    mobileNo: {
-      type: string,
+    phoneNo: {
+      type: Number,
     },
     password: {
-      type: string,
+      type: String,
       required: true,
     },
     role:{
@@ -36,13 +36,13 @@ const userSchema = new Schema(
       default:0
     },
     avatar: {
-      type: string,
+      type: String,
     },
     userOrder: {
-      type: string,
+      type: String,
     },
     adress: {
-      type: string,
+      type: String,
     },
   },
   { timestamps: true }
