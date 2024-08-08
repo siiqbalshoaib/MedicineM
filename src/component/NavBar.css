@@ -1,0 +1,44 @@
+
+
+.navbar-brand {
+color: rgb(175, 80, 243);
+font-family: "Baloo Bhai 2", sans-serif;
+  font-optical-sizing: auto;
+  
+  
+  
+    
+    font-style: normal;
+    font-size: larger;
+    font-weight: 800;
+    
+}
+.navbar-brand:hover{
+    font-size: 10px;
+}
+.nav-link,.navbar-nav .nav-link.active{
+    color: rgb(175, 80, 243);
+font-family: "Baloo Bhai 2", sans-serif;
+  font-optical-sizing: auto;
+   font-style: normal;
+}
+
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
+
+
+
+@media only screen and (max-width: 768px) {
+   .navbar-brand{
+    
+       
+    padding-left: 97px;
+   }
+  }
