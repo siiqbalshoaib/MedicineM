@@ -17,10 +17,10 @@ const productSchema = new Schema(
       required: true,
       min: 0.01, // Enforce a minimum positive price
     },
-    //   category: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'Category', // Reference the Category model (optional)
-    //   },
+      category: {
+        type: Schema.Types.ObjectId,
+        ref: "Category", // Reference the Category model (optional)
+      },
     images: {
       type: String,
       trim: true,

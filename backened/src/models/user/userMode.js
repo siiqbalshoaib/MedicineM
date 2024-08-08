@@ -31,6 +31,10 @@ const userSchema = new Schema(
       type: string,
       required: true,
     },
+    role:{
+      type : Number,
+      default:0
+    },
     avatar: {
       type: string,
     },
