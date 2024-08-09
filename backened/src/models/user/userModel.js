@@ -42,9 +42,10 @@ const userSchema = new Schema(
     avatar: {
       type: String,
     },
-    userOrder: {
-      type: String,
-    },
+    userOrder:[{
+      type: Schema.Types.ObjectId,
+      ref: "Order"
+    }],
     address: {
       type: String,
     },
