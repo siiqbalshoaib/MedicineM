@@ -45,7 +45,7 @@ const userSchema = new Schema(
     userOrder: {
       type: String,
     },
-    adress: {
+    address: {
       type: String,
     },
   },
