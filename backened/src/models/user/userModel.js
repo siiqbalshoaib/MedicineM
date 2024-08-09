@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2"
 
 
 
@@ -42,9 +43,9 @@ const userSchema = new Schema(
     avatar: {
       type: String,
     },
-    userOrder:[{
+      Order:[{
       type: Schema.Types.ObjectId,
-      ref: "Order"
+      ref: "Product"
     }],
     address: {
       type: String,
@@ -89,5 +90,8 @@ userSchema.methods.generateRefreshToken = function () {
     }
   );
 };
+
+
+userSchema.plugin(mongooseAggregatePaginate)
 
 export const User = mongoose.model("User", userSchema);
