@@ -4,7 +4,7 @@ import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2"
 
 const categorySchema = new Schema({
    name: {
-    type: string,
+    type: String,
     required: true
    },
    

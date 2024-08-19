@@ -2,6 +2,9 @@ import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { Product } from "../models/user/productModel.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
+import {Category} from "../models/user/productCategoryModel.js"
+//import mongoose, {isValidObjectId} from "mongoose"
+//import { pipeline } from "stream";
 
 
 
@@ -64,8 +67,97 @@ return res.status(201).json(
 })
 
 
+const getAllProduct = asyncHandler(async(req, res) =>{
 
+   const { page=1, limit=20,  query, sortBy, sortType} = req.query
+
+   const pipeline = [];
+   
+    // for using Full Text based search u need to create a search index in mongoDB atlas
+    // you can include field mapppings in search index eg.title, description, as well
+    // Field mappings specify which fields within your documents should be indexed for text search.
+    // this helps in seraching only in title, desc providing faster search results
+    // here the name of search index is 'search-videos'
+
+
+    if(query)
+    {
+        pipeline.push({
+            $search:{
+                index: "search-product",
+                text:{
+                    query: query,
+                    Path: ["productName","description"]
+                }
+            }
+        })
+    }
+    
+   
+
+  // fetch product only that are set inStock as true
+  pipeline.push({ $match: { inStock: true } });
+
+
+     //sortBy can be views, createdAt, duration
+    //sortType can be ascending(-1) or descending(1)
+    if (sortBy && sortType) {
+        pipeline.push({
+            $sort: {
+                [sortBy]: sortType === "asc" ? 1 : -1
+            }
+        });
+    } else {
+        pipeline.push({ $sort: { createdAt: -1 } });
+    }
+
+    pipeline.push({
+        $lookup:{
+            from:"Category",
+            localField: "category",
+            foreignField: "_id",
+            as: "productCategory",
+            pipeline:[
+              {
+                $project:{
+                    name: 1
+                }
+              }
+            ]
+        }
+        
+    },
+    {
+        $unwind : "$productCategory"
+    }
+)
+
+
+
+
+
+
+const productAggregate = Product.aggregate(pipeline);
+
+const options = {
+    page: parseInt(page, 10),
+    limit: parseInt(limit, 20)
+};
+
+const product = await Product.aggregatePaginate(productAggregate, options);
+
+return res
+          .status(200)
+          .json(new ApiResponse(200, product, "Product Fetched Successfully"))
+
+
+
+
+
+        
+});
 
 export{
     addProduct,
+    getAllProduct,
 }
