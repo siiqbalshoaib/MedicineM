@@ -24,10 +24,15 @@ app.use(cookieParser());
 
 import userRouter from "./route/userRoute.js"
 
+import productRouter from "./route/productRoute.js"
+
 
 //  route declaration
 
 app.use("/api/v1/users", userRouter)
+
+// product Route
+app.use("/api/v1/admin", productRouter)
 
 
 

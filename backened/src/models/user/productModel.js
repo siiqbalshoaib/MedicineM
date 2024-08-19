@@ -8,7 +8,7 @@ const productSchema = new Schema({
    
     
         productName: {
-          type: string,
+          type: String,
           required: true,
         },
     
@@ -38,14 +38,14 @@ const productSchema = new Schema({
           type: Boolean,
           default: true
         },
-        manufactured:{
-            type: string
+        mfg:{
+            type: String
         },
         expiry:{
-            type: string
+            type: String
         },
         batchNo:{
-            type: string
+            type: String
         },
         
     
@@ -59,4 +59,4 @@ const productSchema = new Schema({
 productSchema.plugin(mongooseAggregatePaginate)
 
 
-export const Order = mongoose.model("Product", productSchema)
+export const Product = mongoose.model("Product", productSchema)
