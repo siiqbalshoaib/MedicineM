@@ -23,8 +23,8 @@ const productSchema = new Schema({
           min: 0.01, // Enforce a minimum positive price
         },
           category: {
-            type: Schema.Types.ObjectId,
-            ref: "Category", // Reference the Category model (optional)
+            type: String,
+            required: true
           },
         images: {
           type: String,

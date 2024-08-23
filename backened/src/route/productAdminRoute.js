@@ -1,7 +1,7 @@
 import {Router} from "express"
 
-import {addProduct,
-        getAllProduct
+import {addProduct, updateProduct
+        
 } from "../controller/adminController.js"
 
 
@@ -10,8 +10,8 @@ import {addProduct,
 const router = Router();
 
 router.route("/addProduct").post(addProduct)
+router.route("/updateProduct/:_id").post(updateProduct)
 
-router.route("/allProduct").get(getAllProduct)
 
 
 export default router

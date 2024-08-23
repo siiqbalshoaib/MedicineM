@@ -2,9 +2,9 @@ import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { Product } from "../models/user/productModel.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
-import {Category} from "../models/user/productCategoryModel.js"
+
 //import mongoose, {isValidObjectId} from "mongoose"
-//import { pipeline } from "stream";
+
 
 
 
@@ -12,9 +12,9 @@ import {Category} from "../models/user/productCategoryModel.js"
 
 const addProduct = asyncHandler(async(req,res)=>{
 
-   const {productName, description, price, stock, mfg,  expiry} = req.body
+   const {productName, description, price, stock, mfg, category,  expiry} = req.body
 
-   if([productName,description,price, stock,mfg, expiry].some((field)=>field?.trim() === ""))
+   if([productName,description,price, stock,mfg, expiry, category].some((field)=>field?.trim() === ""))
     {
        throw new ApiError(400, "All fields are required")
     }
@@ -49,13 +49,16 @@ const product = await Product.create({
      price,
      mfg,
      expiry,
-     stock
+     stock,
+     category
+     
+     
 })
 
 const createdProduct = await Product.findById(product._id)
 
 if(!createdProduct){
-    throw new ApiError(500,  "Product Added Successfully")
+    throw new ApiError(500,  "Product Not Added ")
 }
 return res.status(201).json(
     new ApiResponse(200, createdProduct," Product Created Successfully !")
@@ -64,100 +67,67 @@ return res.status(201).json(
     
 
 
-})
-
-
-const getAllProduct = asyncHandler(async(req, res) =>{
-
-   const { page=1, limit=20,  query, sortBy, sortType} = req.query
-
-   const pipeline = [];
-   
-    // for using Full Text based search u need to create a search index in mongoDB atlas
-    // you can include field mapppings in search index eg.title, description, as well
-    // Field mappings specify which fields within your documents should be indexed for text search.
-    // this helps in seraching only in title, desc providing faster search results
-    // here the name of search index is 'search-videos'
-
-
-    if(query)
-    {
-        pipeline.push({
-            $search:{
-                index: "search-product",
-                text:{
-                    query: query,
-                    Path: ["productName","description"]
-                }
-            }
-        })
-    }
-    
-   
-
-  // fetch product only that are set inStock as true
-  pipeline.push({ $match: { inStock: true } });
-
-
-     //sortBy can be views, createdAt, duration
-    //sortType can be ascending(-1) or descending(1)
-    if (sortBy && sortType) {
-        pipeline.push({
-            $sort: {
-                [sortBy]: sortType === "asc" ? 1 : -1
-            }
-        });
-    } else {
-        pipeline.push({ $sort: { createdAt: -1 } });
-    }
-
-    pipeline.push({
-        $lookup:{
-            from:"Category",
-            localField: "category",
-            foreignField: "_id",
-            as: "productCategory",
-            pipeline:[
-              {
-                $project:{
-                    name: 1
-                }
-              }
-            ]
-        }
-        
-    },
-    {
-        $unwind : "$productCategory"
-    }
-)
-
-
-
-
-
-
-const productAggregate = Product.aggregate(pipeline);
-
-const options = {
-    page: parseInt(page, 10),
-    limit: parseInt(limit, 20)
-};
-
-const product = await Product.aggregatePaginate(productAggregate, options);
-
-return res
-          .status(200)
-          .json(new ApiResponse(200, product, "Product Fetched Successfully"))
-
-
-
-
-
-        
 });
 
+
+const updateProduct = asyncHandler(async(req, res)=>{
+  
+    const {productName,  price, stock  } = req.body
+
+    if(!productName || !price || !stock  ){
+        throw new ApiError(400, "All fields are required");
+    }
+    const findProduct = await Product.findById(req.params._id);
+        if(!findProduct)
+            {
+                throw new ApiError(404, "Product not found")
+
+            }
+
+    const product = await Product.findByIdAndUpdate(
+         req.params._id,
+        {
+            $set:{
+                productName,
+                price,
+                stock
+            }
+        },
+        {new: true}
+    )
+
+    return res
+          .status(200)
+          .json(new ApiResponse(200, product, "Product updated Successfully !!"))
+
+});
+
+
+
+// router.put("/updatenote/:id",fetchuser,async(req,res)=>{
+//     const {title,description,tag} = req.body;
+//     //Create a new note object to update 
+//     const newNote = {};
+//     if(title){newNote.title = title};
+//     if(description){newNote.description = description};
+//     if(tag){newNote.tag = tag};
+  
+//     //find the note to be update and update it
+//     let note = await Notes.findById(req.params.id);
+//     if(!note){return res.status(404).send("Not found")}
+  
+//     if(note.user.toString()!== req.user.id){
+//       return res.status(401).send(" Access Denied")
+//     }
+//    note= await Notes.findByIdAndUpdate(req.params.id,{$set: newNote}, {new:true})
+//     res.json({note});
+//   })
+
+
+
+
 export{
+    
     addProduct,
-    getAllProduct,
+    updateProduct,
 }
