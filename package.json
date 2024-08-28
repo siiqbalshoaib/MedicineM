@@ -9,7 +9,7 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "both": "concurrently \"npm run dev\" "
+   "both": "concurrently \"npm run dev\" \"nodemon backened/src/index.js\""
   },
   "dependencies": {
     "concurrently": "^8.2.2",
